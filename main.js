@@ -16,7 +16,7 @@ valueArr.o = ["______", "  __  ", " |  | ", " |__| ", "______"];
  */
 class Game {
 	constructor() {
-		this.version = "1.2.1";
+		// this.version = "1.3.0";
 		this.winner = "";
 		this.board = {};
 		this.board.z = 3;
@@ -87,8 +87,8 @@ class Game {
 			}
 		}
 		
-		//Add version tag
-		document.getElementById("version").innerHTML = "v" + this.version;
+		// Add version tag
+		// document.getElementById("version").innerHTML = "v" + this.version;
 	}
 }
 
