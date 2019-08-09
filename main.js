@@ -31,10 +31,10 @@ class Game {
 		// this.version = "1.3.0";
 		this.winner = undefined;
 
-		this.board = (new Array(3)).fill((new Array(3)).fill({
+		this.board = Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => ({
 			winner: undefined,
-			cell: (new Array(3)).fill((new Array(3)).fill(undefined))
-		}));
+			cell: Array.from({ length: 3 }, () => Array.from({ length: 3 }, () => undefined))
+		})));
 
 		this.players = [player1, player2];
 
