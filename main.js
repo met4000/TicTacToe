@@ -168,7 +168,7 @@ function setCell(x, y, z, a, playerID) {
  * void updateActive
  */
 function updateActive(x, y) {
-	game.active.board = !game.board[x][y].winner ? [x, y] : [];
+	game.active.board = game.board[x][y].winner == undefined ? [x, y] : [];
 }
 
 /*
@@ -186,6 +186,8 @@ function updateWinner(z, a) {
 		//Vertical
 		for (var i = 0; i < 2; i++) {
 			var f = board[i][0];
+			if (f == undefined) continue;
+
 			if (board[i].every(v => v == f)) {
 				win = f;
 				break search;
@@ -195,6 +197,8 @@ function updateWinner(z, a) {
 		//Horizontal
 		for (var i = 0; i < 2; i++) {
 			var f = board[0][i];
+			if (f == undefined) continue;
+
 			if (board.every(v => v[i] == f)) {
 				win = f;
 				break search;
@@ -203,6 +207,8 @@ function updateWinner(z, a) {
 		
 		//Diagonal
 		var f = board[1][1];
+		if (f == undefined) break search;
+
 		if (board.every((v, i) => v[i] == f) || board.every((v, i) => v[2 - i] == f)) {
 			win = f;
 			break search;
@@ -222,34 +228,35 @@ function updateWinner(z, a) {
  * void updateWinnerEntire()
  */
 function updateWinnerEntire() {
-	if (!!game.winner)
+	if (game.winner != undefined)
 		return false;
+	
 	var board = game.board, win = undefined;
 	
 	//Vertical
-	if (board[0][0].winner == board[0][1].winner && board[0][0].winner == board[0][2].winner)
+	if (board[0][0].winner == board[0][1].winner && board[0][0].winner == board[0][2].winner && board[0][0].winner != undefined)
 		win = board[0][0].winner;
-	else if (board[1][0].winner == board[1][1].winner && board[1][0].winner == board[1][2].winner)
+	else if (board[1][0].winner == board[1][1].winner && board[1][0].winner == board[1][2].winner && board[1][0].winner != undefined)
 		win = board[1][0].winner;
-	else if (board[2][0].winner == board[2][1].winner && board[2][0].winner == board[2][2].winner)
+	else if (board[2][0].winner == board[2][1].winner && board[2][0].winner == board[2][2].winner && board[2][0].winner != undefined)
 		win = board[2][0].winner;
 	
 	//Horizontal
-	else if (board[0][0].winner == board[1][0].winner && board[0][0].winner == board[2][0].winner)
+	else if (board[0][0].winner == board[1][0].winner && board[0][0].winner == board[2][0].winner && board[0][0].winner != undefined)
 		win = board[0][0].winner;
-	else if (board[0][1].winner == board[1][1].winner && board[0][1].winner == board[2][1].winner)
+	else if (board[0][1].winner == board[1][1].winner && board[0][1].winner == board[2][1].winner && board[0][1].winner != undefined)
 		win = board[0][1].winner;
-	else if (board[0][2].winner == board[1][2].winner && board[0][2].winner == board[2][2].winner)
+	else if (board[0][2].winner == board[1][2].winner && board[0][2].winner == board[2][2].winner && board[0][2].winner != undefined)
 		win = board[0][2].winner;
 	
 	//Diagonal
-	else if (board[0][0].winner == board[1][1].winner && board[0][0].winner == board[2][2].winner)
+	else if (board[0][0].winner == board[1][1].winner && board[0][0].winner == board[2][2].winner && board[0][0].winner != undefined)
 		win = board[0][0].winner;
-	else if (board[2][0].winner == board[1][1].winner && board[2][0].winner == board[0][2].winner)
+	else if (board[2][0].winner == board[1][1].winner && board[2][0].winner == board[0][2].winner && board[2][0].winner != undefined)
 		win = board[2][0].winner;
 	
 	game.winner = win;
-	if (!!win)
+	if (win != undefined)
 		alert("Player " + (win + 1) + " has won the game!");
 }
 
