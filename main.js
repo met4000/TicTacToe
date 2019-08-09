@@ -177,7 +177,7 @@ function updateActive(x, y) {
  * a - The a location of the board
  */
 function updateWinner(z, a) {
-	if (!!game.board[z][a].winner)
+	if (game.board[z][a].winner != undefined)
 		return false;
 
 	var board = game.board[z][a].cell, win = undefined;
@@ -212,7 +212,7 @@ function updateWinner(z, a) {
 	game.board[z][a].winner = win;
 
 	// TODO - move to render board function
-	if (!!win) {
+	if (win != undefined) {
 		document.getElementById("board" + a + "_" + z).innerHTML = win == 0 ? "____________________<br>|                    |<br>|     \\        /     |<br>|      \\      /      |<br>|       \\    /       |<br>|        \\  /        |<br>|         \\/         |<br>|         /\\         |<br>|        /  \\        |<br>|       /    \\       |<br>|      /      \\      |<br>|     /        \\     |<br>|____________________|" : (win == 1 ? "____________________<br>|    ____________    |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |____________|   |<br>|____________________|" : document.getElementById("board" + a + "_" + z).innerHTML);
 		//alert("Player " + (win + 1) + " has won board " + (3 * parseInt(a) + parseInt(z)) + "!");
 	}
