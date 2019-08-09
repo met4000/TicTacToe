@@ -10,7 +10,7 @@
  * Contains all data for the game
  */
 game = {};
-game.version = "1.2.0";
+game.version = "1.2.1";
 game.winner = "";
 game.board = {};
 game.board.z = 3;
@@ -183,7 +183,7 @@ function updateWinner(z, a) {
 	game.board[z][a].data.winner = win;
 	if (!!win) {
 		document.getElementById("board" + a + "_" + z).innerHTML = win == 'x' ? "____________________<br>|                    |<br>|     \\        /     |<br>|      \\      /      |<br>|       \\    /       |<br>|        \\  /        |<br>|         \\/         |<br>|         /\\         |<br>|        /  \\        |<br>|       /    \\       |<br>|      /      \\      |<br>|     /        \\     |<br>|____________________|" : (win == 'o' ? "____________________<br>|    ____________    |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |____________|   |<br>|____________________|" : document.getElementById("board" + a + "_" + z).innerHTML);
-		alert("Player " + (win == 'x' ? 1 : (win == 'o' ? 2 : 'ERR')) + " has won board " + (game.board.z * parseInt(a) + parseInt(z)) + "!");
+		//alert("Player " + (win == 'x' ? 1 : (win == 'o' ? 2 : 'ERR')) + " has won board " + (game.board.z * parseInt(a) + parseInt(z)) + "!");
 	}
 }
 
