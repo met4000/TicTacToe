@@ -6,94 +6,98 @@
  * 
  */
 
-/*
- * Contains all data for the game
- */
-game = {};
-game.version = "1.2.1";
-game.winner = "";
-game.board = {};
-game.board.z = 3;
-game.board.a = 3;
-for (var z = 0; z < game.board.z; z++) {
-	game.board[z] = {};
-	for (var a = 0; a < game.board.a; a++) {
-		game.board[z][a] = {};
-		game.board[z][a].data = {};
-		game.board[z][a].data.locations = {};
-		for (var x = 0; x < 3; x++) {
-			game.board[z][a].data.locations[x] = {};
-			for (var y = 0; y < 3; y++) {
-				game.board[z][a].data.locations[x][y] = "";
-			}
-		}
-		game.board[z][a].data.winner = "";
-	}
-}
-game.active = {};
-game.active.symbol = 'x';
-game.active.board = Math.floor(game.board.a / 2) * game.board.z + Math.floor(game.board.z / 2);
-game.active.toggle = function () {
-	if (this.symbol.toLowerCase() == 'x')
-		this.symbol = 'o';
-	else if (this.symbol.toLowerCase() == 'o')
-		this.symbol = 'x';
-};
-
 // Contains a table of the X and O ascii values
 valueArr = {};
 valueArr.x = ["______", "      ", "  \\\/  ", "  \/\\  ", "______"];
 valueArr.o = ["______", "  __  ", " |  | ", " |__| ", "______"];
 
-onload = function () {
-	//Document Load Trigger
-	
-	//Create Board
-	for (var a = 0; a < game.board.a; a++) {
-		for (var z = 0; z < game.board.z; z++) {
-			document.getElementById("board").innerHTML += "<div id=\"board" + a + "_" + z + "\" style=\"display: inline-block;\"></div>";
-			var board = "document.getElementById('board" + a + "_" + z + "')";
-			
-			eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_0\">______</span>_'");
-			eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_1\">______</span>_'");
-			eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_2\">______</span><br>'");
-			
-			for (var o = 0; o < 3; o++) {
-				for (var i = 0; i < 3; i++) {
+/*
+ * Contains this specific data
+ */
+class Game {
+	constructor() {
+		this.version = "1.2.1";
+		this.winner = "";
+		this.board = {};
+		this.board.z = 3;
+		this.board.a = 3;
+		for (var z = 0; z < this.board.z; z++) {
+			this.board[z] = {};
+			for (var a = 0; a < this.board.a; a++) {
+				this.board[z][a] = {};
+				this.board[z][a].data = {};
+				this.board[z][a].data.locations = {};
+				for (var x = 0; x < 3; x++) {
+					this.board[z][a].data.locations[x] = {};
+					for (var y = 0; y < 3; y++) {
+						this.board[z][a].data.locations[x][y] = "";
+					}
+				}
+				this.board[z][a].data.winner = "";
+			}
+		}
+		this.active = {};
+		this.active.symbol = 'x';
+		this.active.board = Math.floor(this.board.a / 2) * this.board.z + Math.floor(this.board.z / 2);
+		this.active.toggle = function () {
+			if (this.symbol.toLowerCase() == 'x')
+				this.symbol = 'o';
+			else if (this.symbol.toLowerCase() == 'o')
+				this.symbol = 'x';
+		};
+
+		// Construct the board
+		for (var a = 0; a < this.board.a; a++) {
+			for (var z = 0; z < this.board.z; z++) {
+				document.getElementById("board").innerHTML += "<div id=\"board" + a + "_" + z + "\" style=\"display: inline-block;\"></div>";
+				var board = "document.getElementById('board" + a + "_" + z + "')";
+				
+				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_0\">______</span>_'");
+				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_1\">______</span>_'");
+				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_2\">______</span><br>'");
+				
+				for (var o = 0; o < 3; o++) {
+					for (var i = 0; i < 3; i++) {
+						eval(board + ".innerHTML += '|'");
+						for (var n = 0; n < 3; n++) {
+							eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + o + "_" + n + "\">      </span>|'");
+						}
+						eval(board + ".innerHTML += '<br>'");
+					}
 					eval(board + ".innerHTML += '|'");
 					for (var n = 0; n < 3; n++) {
-						eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + o + "_" + n + "\">      </span>|'");
+						eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + (o > 1 ? 2 : o + 1) + "_" + n + "\">______</span>|'");
 					}
 					eval(board + ".innerHTML += '<br>'");
 				}
-				eval(board + ".innerHTML += '|'");
-				for (var n = 0; n < 3; n++) {
-					eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + (o > 1 ? 2 : o + 1) + "_" + n + "\">______</span>|'");
-				}
-				eval(board + ".innerHTML += '<br>'");
 			}
+			document.getElementById("board").innerHTML += "<br>";
 		}
-		document.getElementById("board").innerHTML += "<br>";
-	}
-	
-	//Load eventListener
-	for (var a = 0; a < game.board.a; a++) {
-		for (var z = 0; z < game.board.z; z++) {
-			for (var y = 0; y < 3; y++) {
-				for (var x = 0; x < 3; x++) {
-					for (var i = 1, buttons = document.getElementsByClassName("boardButton" + a + "_" + z + "_" + y + "_" + x); i < 4; i++) {
-						buttons[i].addEventListener("click", function(){buttonOnClick(this);});
+		
+		//Load eventListener
+		for (var a = 0; a < this.board.a; a++) {
+			for (var z = 0; z < this.board.z; z++) {
+				for (var y = 0; y < 3; y++) {
+					for (var x = 0; x < 3; x++) {
+						for (var i = 1, buttons = document.getElementsByClassName("boardButton" + a + "_" + z + "_" + y + "_" + x); i < 4; i++) {
+							buttons[i].addEventListener("click", function(){buttonOnClick(this);});
+						}
 					}
 				}
 			}
 		}
+		
+		//Add version tag
+		document.getElementById("version").innerHTML = "v" + this.version;
 	}
+}
+
+// Document OnLoad Trigger
+onload = function () {
+	game = new Game();
 	
 	//Update active board colour
 	updateColourEntire();
-	
-	//Add version tag
-	document.getElementById("version").innerHTML = "v" + game.version;
 };
 
 /*
