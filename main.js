@@ -7,27 +7,52 @@
  */
 
 // Defualt X and O ascii art - TODO: make Symbol object which has both small and large version of art
-playerSymbols = {
-	X: ["      ", "  \\\/  ", "  \/\\  "],
+class Counter {
+	constructor(cell, board) {
+		// TODO - Typecheck
+		// if (!(symbol instanceof Array) || symbol.length != 3 || !symbol.every(v => typeof v == "string" && v.length <= 6))
+		// 	throw new Error("Invalid Symbol used to construct Player: " + symbol);
 
-	O: [
+
+		this.cell = cell;
+		this.board = board;	// need to strip borders
+	}
+}
+defaultCounters = {
+	X: new Counter(["      ", "  \\\/  ", "  \/\\  "], ["____________________","|                    |","|     \\        /     |","|      \\      /      |","|       \\    /       |","|        \\  /        |","|         \\/         |","|         /\\         |","|        /  \\        |","|       /    \\       |","|      /      \\      |","|     /        \\     |","|____________________|"]),
+
+	O: new Counter([
 		"  __  ",
 		" |  | ",
 		" |__| "
-	]
+	], [
+		"____________________",
+		"|    ____________    |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |____________|   |",
+		"|____________________|"
+	])
 };
 
 class Player {
-	constructor(symbol) {
-		if (!(symbol instanceof Array) || symbol.length != 3 || !symbol.every(v => typeof v == "string" && v.length <= 6))
-			throw new Error("Invalid Symbol used to construct Player: " + symbol);
+	constructor(counter) {
+		if (!(counter instanceof Counter))
+			throw new Error("Invalid Counter used to construct Player: " + counter);
 
-		this.symbol = symbol;
+		this.counter = counter;
 	}
 }
 
 class Game {
-	constructor(player1 = new Player(playerSymbols.X), player2 = new Player(playerSymbols.O)) {
+	constructor(player1 = new Player(defaultCounters.X), player2 = new Player(defaultCounters.O)) {
 		// this.version = "1.3.0";
 		this.winner = undefined;
 
@@ -158,7 +183,7 @@ function setCell(x, y, z, a, playerID) {
 
 	// TODO - move to render board function
 	for (var i = 0, buttons = document.getElementsByClassName("boardButton" + a + "_" + z + "_" + y + "_" + x); i < 3; i++) {
-		buttons[i + 1].innerHTML = game.players[playerID].symbol[i];
+		buttons[i + 1].innerHTML = game.players[playerID].counter.cell[i];
 	}
 
 	return true;
@@ -219,7 +244,7 @@ function updateWinner(z, a) {
 
 	// TODO - move to render board function
 	if (win != undefined) {
-		document.getElementById("board" + a + "_" + z).innerHTML = win == 0 ? "____________________<br>|                    |<br>|     \\        /     |<br>|      \\      /      |<br>|       \\    /       |<br>|        \\  /        |<br>|         \\/         |<br>|         /\\         |<br>|        /  \\        |<br>|       /    \\       |<br>|      /      \\      |<br>|     /        \\     |<br>|____________________|" : (win == 1 ? "____________________<br>|    ____________    |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |____________|   |<br>|____________________|" : document.getElementById("board" + a + "_" + z).innerHTML);
+		document.getElementById("board" + a + "_" + z).innerHTML = game.players[win].counter.board.join("<br>");	// : document.getElementById("board" + a + "_" + z).innerHTML);
 		//alert("Player " + (win + 1) + " has won board " + (3 * parseInt(a) + parseInt(z)) + "!");
 	}
 }
