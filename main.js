@@ -115,16 +115,17 @@ onload = function () {
 };
 
 
+String.prototype.parseClassName = function (v) { return parseInt(new RegExp("\\s" + v + "(\\d+)\\s").exec(" " + this + " ")[1]); };
+
 /*
  * void buttonOnClick(e)
  * e - The span element this is executed from
  */
 function buttonOnClick(e) {
-	var pClassName = " " + e.className + " ";
-	var z = parseInt(/\sz(\d+)\s/.exec(pClassName)[1]),
-			a = parseInt(/\sa(\d+)\s/.exec(pClassName)[1]),
-			x = parseInt(/\sx(\d+)\s/.exec(pClassName)[1]),
-			y = parseInt(/\sy(\d+)\s/.exec(pClassName)[1]);
+	var z = e.className.parseClassName("z"),
+			a = e.className.parseClassName("a"),
+			x = e.className.parseClassName("x"),
+			y = e.className.parseClassName("y");
 
 
 	// Active board test
