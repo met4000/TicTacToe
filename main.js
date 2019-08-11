@@ -73,25 +73,25 @@ class Game {
 		for (var a = 0; a < 3; a++) {
 			for (var z = 0; z < 3; z++) {
 				document.getElementById("board").innerHTML += "<div id=\"board" + a + "_" + z + "\" style=\"display: inline-block;\"></div>";
-				var board = "document.getElementById('board" + a + "_" + z + "')";
+				var board = document.getElementById("board" + a + "_" + z);
 				
-				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_0\">______</span>_'");
-				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_1\">______</span>_'");
-				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_2\">______</span><br>'");
+				board.innerHTML += "<span class=\"boardButton" + a + "_" + z + "_0_0\">______</span>_"
+				board.innerHTML += "<span class=\"boardButton" + a + "_" + z + "_0_1\">______</span>_";
+				board.innerHTML += "<span class=\"boardButton" + a + "_" + z + "_0_2\">______</span><br>";
 				
 				for (var o = 0; o < 3; o++) {
 					for (var i = 0; i < 3; i++) {
-						eval(board + ".innerHTML += '|'");
+						board.innerHTML += "|";
 						for (var n = 0; n < 3; n++) {
-							eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + o + "_" + n + "\">      </span>|'");
+							board.innerHTML += "<span class=\"boardButton" + a + "_" + z + "_" + o + "_" + n + "\">      </span>|";
 						}
-						eval(board + ".innerHTML += '<br>'");
+						board.innerHTML += "<br>";
 					}
-					eval(board + ".innerHTML += '|'");
+					board.innerHTML += "|";
 					for (var n = 0; n < 3; n++) {
-						eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + (o > 1 ? 2 : o + 1) + "_" + n + "\">______</span>|'");
+						board.innerHTML += "<span class=\"boardButton" + a + "_" + z + "_" + (o > 1 ? 2 : o + 1) + "_" + n + "\">______</span>|";
 					}
-					eval(board + ".innerHTML += '<br>'");
+					board.innerHTML += "<br>";
 				}
 			}
 			document.getElementById("board").innerHTML += "<br>";
