@@ -203,7 +203,7 @@ function updateWinner(z, a) {
 	
 	search: {
 		//Vertical
-		for (var i = 0; i < 2; i++) {
+		for (var i = 0; i < 3; i++) {
 			var f = board[i][0];
 			if (f == undefined) continue;
 
@@ -214,7 +214,7 @@ function updateWinner(z, a) {
 		}
 		
 		//Horizontal
-		for (var i = 0; i < 2; i++) {
+		for (var i = 0; i < 3; i++) {
 			var f = board[0][i];
 			if (f == undefined) continue;
 
