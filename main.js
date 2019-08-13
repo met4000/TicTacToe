@@ -7,27 +7,52 @@
  */
 
 // Defualt X and O ascii art - TODO: make Symbol object which has both small and large version of art
-playerSymbols = {
-	X: ["      ", "  \\\/  ", "  \/\\  "],
+class Counter {
+	constructor(cell, board) {
+		// TODO - Typecheck
+		// if (!(symbol instanceof Array) || symbol.length != 3 || !symbol.every(v => typeof v == "string" && v.length <= 6))
+		// 	throw new Error("Invalid Symbol used to construct Player: " + symbol);
 
-	O: [
+
+		this.cell = cell;
+		this.board = board;	// need to strip borders
+	}
+}
+defaultCounters = {
+	X: new Counter(["      ", "  \\\/  ", "  \/\\  "], ["____________________","|                    |","|     \\        /     |","|      \\      /      |","|       \\    /       |","|        \\  /        |","|         \\/         |","|         /\\         |","|        /  \\        |","|       /    \\       |","|      /      \\      |","|     /        \\     |","|____________________|"]),
+
+	O: new Counter([
 		"  __  ",
 		" |  | ",
 		" |__| "
-	]
+	], [
+		"____________________",
+		"|    ____________    |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |            |   |",
+		"|   |____________|   |",
+		"|____________________|"
+	])
 };
 
 class Player {
-	constructor(symbol) {
-		if (!(symbol instanceof Array) || symbol.length != 3 || !symbol.every(v => typeof v == "string" && v.length <= 6))
-			throw new Error("Invalid Symbol used to construct Player: " + symbol);
+	constructor(counter) {
+		if (!(counter instanceof Counter))
+			throw new Error("Invalid Counter used to construct Player: " + counter);
 
-		this.symbol = symbol;
+		this.counter = counter;
 	}
 }
 
 class Game {
-	constructor(player1 = new Player(playerSymbols.X), player2 = new Player(playerSymbols.O)) {
+	constructor(player1 = new Player(defaultCounters.X), player2 = new Player(defaultCounters.O)) {
 		// this.version = "1.3.0";
 		this.winner = undefined;
 
@@ -47,43 +72,34 @@ class Game {
 		// Construct the board
 		for (var a = 0; a < 3; a++) {
 			for (var z = 0; z < 3; z++) {
-				document.getElementById("board").innerHTML += "<div id=\"board" + a + "_" + z + "\" style=\"display: inline-block;\"></div>";
-				var board = "document.getElementById('board" + a + "_" + z + "')";
+				document.getElementById("board").innerHTML += "<div class=\"board a" + a + " z" + z + "\" style=\"display: inline-block;\"></div>";	// should move style to stylesheet
+				var board = document.getElementsByClassName("board a" + a + " z" + z)[0];
 				
-				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_0\">______</span>_'");
-				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_1\">______</span>_'");
-				eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_0_2\">______</span><br>'");
+				board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y0 x0\">______</span>_"
+				board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y0 x1\">______</span>_";
+				board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y0 x2\">______</span><br>";
 				
 				for (var o = 0; o < 3; o++) {
 					for (var i = 0; i < 3; i++) {
-						eval(board + ".innerHTML += '|'");
+						board.innerHTML += "|";
 						for (var n = 0; n < 3; n++) {
-							eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + o + "_" + n + "\">      </span>|'");
+							board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y" + o + " x" + n + "\">      </span>|";
 						}
-						eval(board + ".innerHTML += '<br>'");
+						board.innerHTML += "<br>";
 					}
-					eval(board + ".innerHTML += '|'");
+					board.innerHTML += "|";
 					for (var n = 0; n < 3; n++) {
-						eval(board + ".innerHTML += '<span class=\"boardButton" + a + "_" + z + "_" + (o > 1 ? 2 : o + 1) + "_" + n + "\">______</span>|'");
+						board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y" + (o > 1 ? 2 : o + 1) + " x" + n + "\">______</span>|";
 					}
-					eval(board + ".innerHTML += '<br>'");
+					board.innerHTML += "<br>";
 				}
 			}
 			document.getElementById("board").innerHTML += "<br>";
 		}
 		
-		//Load eventListener
-		for (var a = 0; a < 3; a++) {
-			for (var z = 0; z < 3; z++) {
-				for (var y = 0; y < 3; y++) {
-					for (var x = 0; x < 3; x++) {
-						for (var i = 1, buttons = document.getElementsByClassName("boardButton" + a + "_" + z + "_" + y + "_" + x); i < 4; i++) {
-							buttons[i].addEventListener("click", function(){buttonOnClick(this);});
-						}
-					}
-				}
-			}
-		}
+		// Load eventListener
+		var buttons = Array.from(document.getElementsByClassName("boardButton"));
+		for (var i in buttons) buttons[i].addEventListener("click", (e) => buttonOnClick(e.path[0]));
 		
 		// Add version tag
 		// document.getElementById("version").innerHTML = "v" + this.version;
@@ -99,15 +115,17 @@ onload = function () {
 };
 
 
+String.prototype.parseClassName = function (v) { return parseInt(new RegExp("\\s" + v + "(\\d+)\\s").exec(" " + this + " ")[1]); };
+
 /*
  * void buttonOnClick(e)
- * e - The span element this is executed from ('this')
+ * e - The span element this is executed from
  */
 function buttonOnClick(e) {
-	var z = parseInt(e.className.charAt(13)),
-			a = parseInt(e.className.charAt(11)),
-			x = parseInt(e.className.charAt(17)),
-			y = parseInt(e.className.charAt(15));
+	var z = e.className.parseClassName("z"),
+			a = e.className.parseClassName("a"),
+			x = e.className.parseClassName("x"),
+			y = e.className.parseClassName("y");
 
 
 	// Active board test
@@ -157,8 +175,9 @@ function setCell(x, y, z, a, playerID) {
 	game.board[z][a].cell[x][y] = playerID;
 
 	// TODO - move to render board function
-	for (var i = 0, buttons = document.getElementsByClassName("boardButton" + a + "_" + z + "_" + y + "_" + x); i < 3; i++) {
-		buttons[i + 1].innerHTML = game.players[playerID].symbol[i];
+	var buttons = Array.from(document.getElementsByClassName("boardButton a" + a + " z" + z + " y" + y + " x" + x));
+	for (var i = 0; i < 3; i++) {
+		buttons[i + 1].innerHTML = game.players[playerID].counter.cell[i];
 	}
 
 	return true;
@@ -184,7 +203,7 @@ function updateWinner(z, a) {
 	
 	search: {
 		//Vertical
-		for (var i = 0; i < 2; i++) {
+		for (var i = 0; i < 3; i++) {
 			var f = board[i][0];
 			if (f == undefined) continue;
 
@@ -195,7 +214,7 @@ function updateWinner(z, a) {
 		}
 		
 		//Horizontal
-		for (var i = 0; i < 2; i++) {
+		for (var i = 0; i < 3; i++) {
 			var f = board[0][i];
 			if (f == undefined) continue;
 
@@ -219,7 +238,7 @@ function updateWinner(z, a) {
 
 	// TODO - move to render board function
 	if (win != undefined) {
-		document.getElementById("board" + a + "_" + z).innerHTML = win == 0 ? "____________________<br>|                    |<br>|     \\        /     |<br>|      \\      /      |<br>|       \\    /       |<br>|        \\  /        |<br>|         \\/         |<br>|         /\\         |<br>|        /  \\        |<br>|       /    \\       |<br>|      /      \\      |<br>|     /        \\     |<br>|____________________|" : (win == 1 ? "____________________<br>|    ____________    |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |            |   |<br>|   |____________|   |<br>|____________________|" : document.getElementById("board" + a + "_" + z).innerHTML);
+		document.getElementsByClassName("board a" + a + " z" + z)[0].innerHTML = game.players[win].counter.board.join("<br>");	// : document.getElementById("board" + a + "_" + z).innerHTML);
 		//alert("Player " + (win + 1) + " has won board " + (3 * parseInt(a) + parseInt(z)) + "!");
 	}
 }
@@ -264,12 +283,16 @@ function updateWinnerEntire() {
  * void updateColourEntire()
  */
 function updateColourEntire() {
+	var boards = document.getElementsByClassName("board")
+	for (var i in Array.from(boards))
+		boards[i].style.color = "#000000";
+
 	for (var z = 0; z < 3; z++) {
 		for (var a = 0; a < 3; a++) {
 			if (game.board[z][a].winner != undefined || (game.active.board.length && (z != game.active.board[0] || a != game.active.board[1])))
-				document.getElementById("board" + a + "_" + z).style.color = "#B0B0B0";
-			else	// else if (!game.active.board.length || (z == game.active.board[0] && a == game.active.board[1]))
-				document.getElementById("board" + a + "_" + z).style.color = "#000000";
+				document.getElementsByClassName("a" + a + " z" + z)[0].style.color = "#B0B0B0";
+			// else	// else if (!game.active.board.length || (z == game.active.board[0] && a == game.active.board[1]))
+			// 	document.getElementsByClassName("a" + a + " z" + z)[0].style.color = "#000000";
 		}
 	}
 }
