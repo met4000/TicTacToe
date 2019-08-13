@@ -130,11 +130,11 @@ function buttonOnClick(e) {
 
 	// Active board test
 	if (game.active.board.length)
-		if (z != game.active.board[0] || a != game.active.board[1])
+		if (z !== game.active.board[0] || a !== game.active.board[1])
 			return false;
 
 	// Overwriting test
-	if (game.board[z][a].cell[x][y])
+	if (game.board[z][a].cell[x][y] !== undefined)
 		return false;
 
 	
