@@ -89,7 +89,7 @@ class Game {
 					}
 					board.innerHTML += "|";
 					for (var n = 0; n < 3; n++) {
-						board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y" + (o > 1 ? 2 : o + 1) + " x" + n + "\">______</span>|";
+						board.innerHTML += "<span class=\"boardButton a" + a + " z" + z + " y" + o + " x" + n + "\">______</span>|";
 					}
 					board.innerHTML += "<br>";
 				}
