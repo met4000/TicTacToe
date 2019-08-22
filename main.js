@@ -177,7 +177,7 @@ function setCell(x, y, z, a, playerID) {
 	// TODO - move to render board function
 	var buttons = Array.from(document.getElementsByClassName("boardButton a" + a + " z" + z + " y" + y + " x" + x));
 	for (var i = 0; i < 3; i++) {
-		buttons[i + 1].innerHTML = game.players[playerID].counter.cell[i];
+		buttons[y ? i : i + 1].innerHTML = game.players[playerID].counter.cell[i];
 	}
 
 	return true;
