@@ -99,7 +99,7 @@ class Game {
 		
 		// Load eventListener
 		var buttons = Array.from(document.getElementsByClassName("boardButton"));
-		for (var i in buttons) buttons[i].addEventListener("click", (e) => buttonOnClick(e.path[0]));
+		for (var i in buttons) buttons[i].addEventListener("click", (e) => buttonOnClick(e.target));
 		
 		// Add version tag
 		// document.getElementById("version").innerHTML = "v" + this.version;
